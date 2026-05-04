@@ -1,0 +1,44 @@
+from collections import deque
+
+class GestoreFila:
+    def __init__(self, nomi_iniziali=None):
+        self._coda = deque(nomi_iniziali) if nomi_iniziali else deque()
+
+    def arriva_cliente(self, nome):
+        self._coda.append(nome)
+        print(f"-> Entrato in fila: {nome}")
+
+    def servi_prossimo(self):
+        if self.is_vuota():
+            print("Nessun cliente da servire!")
+            return None
+        cliente = self._coda.popleft()
+        print(f"Servo: {cliente}")
+        return cliente
+
+    def numero_persone(self):
+        return len(self._coda)
+
+    def is_vuota(self):
+        return len(self._coda) == 0
+
+
+
+
+macelleria = GestoreFila(["Mario", "Giulia", "Tonino", "Rosa"])
+
+
+macelleria.servi_prossimo()
+
+
+macelleria.arriva_cliente("Enzo")
+
+
+print(f"Persone ancora in fila: {macelleria.numero_persone()}")
+
+
+print("--- Prosecuzione servizio fino a chiusura ---")
+while not macelleria.is_vuota():
+    macelleria.servi_prossimo()
+
+print("Negozio chiuso.")

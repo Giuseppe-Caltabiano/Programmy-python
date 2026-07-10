@@ -1,0 +1,88 @@
+class Persona:
+    """Classe base che rappresenta una persona generica nell'ospedale."""
+    def __init__(self, nome: str, cognome: str, eta: int):
+        self.nome = nome
+        self.cognome = cognome
+        self.eta = eta
+
+    def __str__(self):
+        return f"{self.nome} {self.cognome} ({self.eta} anni)"
+
+
+class Paziente(Persona):
+    """Classe che rappresenta un paziente, eredita da Persona."""
+    def __init__(self, nome: str, cognome: str, eta: int, codice_id: str, gruppo_sanguigno: str):
+        # Richiama il costruttore della classe base (Persona)
+        super().__init__(nome, cognome, eta)
+        self.codice_id = codice_id
+        self.gruppo_sanguigno = gruppo_sanguigno
+        self.patologie = []
+        self.allergie = []
+
+    def aggiungi_patologia(self, patologia: str):
+        """Aggiunge una patologia alla lista del paziente."""
+        self.patologie.append(patologia)
+
+    def aggiungi_allergia(self, allergia: str):
+        """Aggiunge un'allergia alla lista del paziente."""
+        self.allergie.append(allergia)
+
+    def __str__(self):
+        info_persona = super().__str__()
+        return f"Paziente: {info_persona} | ID: {self.codice_id} | Gruppo: {self.gruppo_sanguigno}"
+
+
+class Dottore(Persona):
+    """Classe che rappresenta un dottore, eredita da Persona."""
+    def __init__(self, nome: str, cognome: str, eta: int, specializzazione: str, matricola: str, reparto: str):
+        # Richiama il costruttore della classe base (Persona)
+        super().__init__(nome, cognome, eta)
+        self.specializzazione = specializzazione
+        self.matricola = matricola
+        self.reparto = reparto
+        self.pazienti_in_cura = []  # Lista che conterrà oggetti di tipo Paziente
+
+    def prendi_in_cura(self, paziente: Paziente):
+        """Assegna un paziente al dottore, se non è già in cura."""
+        if paziente not in self.pazienti_in_cura:
+            self.pazienti_in_cura.append(paziente)
+            print(f"Il Dott. {self.cognome} ha preso in cura il paziente {paziente.nome} {paziente.cognome}.")
+        else:
+            print(f"Il paziente {paziente.nome} {paziente.cognome} è già in cura con questo dottore.")
+
+    def mostra_pazienti(self):
+        """Stampa la lista di tutti i pazienti attualmente in cura."""
+        print(f"\nPazienti in cura con il Dott. {self.nome} {self.cognome} ({self.specializzazione}):")
+        if not self.pazienti_in_cura:
+            print("- Nessun paziente in cura al momento.")
+        else:
+            for paz in self.pazienti_in_cura:
+                print(f"  * {paz}")
+
+
+# --- ESEMPIO DI UTILIZZO DEL PROGRAMMA ---
+if __name__ == "__main__":
+    print("--- Creazione dei Pazienti ---")
+    paziente_1 = Paziente("Mario", "Rossi", 45, "PAZ001", "A+")
+    paziente_1.aggiungi_patologia("Ipertensione")
+    paziente_1.aggiungi_allergia("Penicillina")
+
+    paziente_2 = Paziente("Anna", "Verdi", 29, "PAZ002", "0-")
+    paziente_2.aggiungi_patologia("Asma")
+
+    print(paziente_1)
+    print(paziente_2)
+    print("-" * 40)
+
+    print("\n--- Creazione del Dottore ---")
+    dottore = Dottore("Luigi", "Bianchi", 52, "Cardiologia", "DOC999", "Reparto Ovest")
+    print(dottore)
+    print("-" * 40)
+
+    print("\n--- Gestione Visite e Cure ---")
+    # Il dottore prende in cura i pazienti
+    dottore.prendi_in_cura(paziente_1)
+    dottore.prendi_in_cura(paziente_2)
+
+    # Mostriamo la lista aggiornata dei pazienti del dottore
+    dottore.mostra_pazienti()
